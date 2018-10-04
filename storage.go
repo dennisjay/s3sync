@@ -228,7 +228,7 @@ func (storage AWSStorage) GetObjectContent(obj *Object) error {
 func (storage AWSStorage) GetObjectMeta(obj *Object) error {
 	result, err := storage.awsSvc.HeadObject(&s3.HeadObjectInput{
 		Bucket: aws.String(storage.awsBucket),
-		Key:    aws.String(obj.Key),
+		Key:    aws.String(filepath.Join(storage.prefix, obj.Key)),
 	})
 	if err != nil {
 		return err
@@ -236,6 +236,9 @@ func (storage AWSStorage) GetObjectMeta(obj *Object) error {
 
 	obj.ContentType = aws.StringValue(result.ContentType)
 	obj.ETag = aws.StringValue(result.ETag)
+	if len(obj.ETag) == 34 { //corect MD5 hash with qoutes
+		obj.ETag = obj.ETag[1:33]
+	}
 	obj.Mtime = aws.TimeValue(result.LastModified)
 	return nil
 }
@@ -387,7 +390,7 @@ func (storage FSStorage) GetObjectContent(obj *Object) (err error) {
 	if err != nil {
 		return err
 	}
-	obj.ETag = etagFromMetadata(fileInfo.ModTime(), fileInfo.Size())
+	obj.ETag = etagFromContent(obj.Content)
 	obj.Mtime = fileInfo.ModTime()
 	return nil
 }
@@ -401,21 +404,15 @@ func (storage FSStorage) GetObjectMeta(obj *Object) (err error) {
 	if err != nil {
 		return err
 	}
-	obj.ETag = etagFromMetadata(fileInfo.ModTime(), fileInfo.Size())
+	obj.ETag = ""
 	obj.Mtime = fileInfo.ModTime()
 	return nil
 }
 
-//etagFromMetadata generate ETAG from FS attributes. Useful for further use
-func etagFromMetadata(mtime time.Time, size int64) string {
-	timeByte := byte(mtime.Unix())
-	sizeByte := byte(size)
+//etagFromContent generate ETAG from contents of file
+func etagFromContent(content []byte) string {
 	buf := new(bytes.Buffer)
-	err := binary.Write(buf, binary.LittleEndian, timeByte)
-	if err != nil {
-		return ""
-	}
-	err = binary.Write(buf, binary.LittleEndian, sizeByte)
+	err := binary.Write(buf, binary.LittleEndian, content)
 	if err != nil {
 		return ""
 	}

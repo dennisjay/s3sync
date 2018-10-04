@@ -49,11 +49,17 @@ func filterObject(obj *Object) bool {
 	return false
 }
 
+func duplicateObject(srcObj *Object, destObj *Object) bool {
+	return srcObj.ETag == destObj.ETag
+}
+
 func processObj(ch <-chan Object, wg *sync.WaitGroup) {
 Main:
 	for obj := range ch {
 		// Get Metadata
 		syncGr.Source.GetObjectMeta(&obj)
+		tObj := Object{Key: obj.Key}
+		syncGr.Target.GetObjectMeta(&tObj)
 
 		// Filter objects
 		if filterObject(&obj) {
@@ -74,6 +80,12 @@ Main:
 				time.Sleep(cli.RetryInterval)
 				continue
 			}
+		}
+
+		// Avoid Duplicate Upload
+		if duplicateObject(&obj, &tObj) {
+			atomic.AddUint64(&counter.skipObjCnt, 1)
+			continue
 		}
 
 		// Upload object
