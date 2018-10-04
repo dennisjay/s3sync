@@ -58,8 +58,6 @@ Main:
 	for obj := range ch {
 		// Get Metadata
 		syncGr.Source.GetObjectMeta(&obj)
-		tObj := Object{Key: obj.Key}
-		syncGr.Target.GetObjectMeta(&tObj)
 
 		// Filter objects
 		if filterObject(&obj) {
@@ -81,6 +79,9 @@ Main:
 				continue
 			}
 		}
+
+		tObj := Object{Key: obj.Key}
+		syncGr.Target.GetObjectMeta(&tObj)
 
 		// Avoid Duplicate Upload
 		if duplicateObject(&obj, &tObj) {
