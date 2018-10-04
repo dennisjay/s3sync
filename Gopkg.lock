@@ -3,17 +3,22 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:4127d47b0ec3a5b38f39018e5cd287b1eacd3c10b2fd68aa29acb77137d2258a"
   name = "github.com/alexflint/go-arg"
   packages = ["."]
+  pruneopts = "UT"
   revision = "074ee5f759999d103724b5594e33901adeb28e73"
 
 [[projects]]
   branch = "master"
+  digest = "1:e36bd4aac23f7b8cafe074ed789b89d673f88d14443a230d3982a694704d121b"
   name = "github.com/alexflint/go-scalar"
   packages = ["."]
+  pruneopts = "UT"
   revision = "e80c3b7ed292b052c7083b6fd7154a8422c33f65"
 
 [[projects]]
+  digest = "1:0921d176759c3c017dd72d037beb4d17c36f6daf0e5f6d9b7b4b6a739ac9266f"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -42,82 +47,116 @@
     "private/protocol/restxml",
     "private/protocol/xml/xmlutil",
     "service/s3",
-    "service/sts"
+    "service/sts",
   ]
+  pruneopts = "UT"
   revision = "4f5d298bd2dcb34b06d944594f458d1f77ac4d66"
   version = "v1.13.42"
 
 [[projects]]
+  digest = "1:975a4480c40f2d0b95e1f83d3ec1aa29a2774e80179e08a9a4ba2aab86721b23"
   name = "github.com/eapache/channels"
   packages = ["."]
+  pruneopts = "UT"
   revision = "47238d5aae8c0fefd518ef2bee46290909cf8263"
   version = "v1.1.0"
 
 [[projects]]
+  digest = "1:444b82bfe35c83bbcaf84e310fb81a1f9ece03edfed586483c869e2c046aef69"
   name = "github.com/eapache/queue"
   packages = ["."]
+  pruneopts = "UT"
   revision = "44cc805cf13205b55f69e14bcb69867d1ae92f98"
   version = "v1.1.0"
 
 [[projects]]
+  digest = "1:4afe9b10ebaf13d77f8bad44b2af5a55c17699b375601a6383a671b0713845b9"
   name = "github.com/go-ini/ini"
   packages = ["."]
+  pruneopts = "UT"
   revision = "6529cf7c58879c08d927016dde4477f18a0634cb"
   version = "v1.36.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:cde3502ff38bf880c3a783acc5b48754aa509c651c4902c68726d2769883e9de"
   name = "github.com/gosuri/uilive"
   packages = ["."]
+  pruneopts = "UT"
   revision = "ac356e6e42cd31fcef8e6aec13ae9ed6fe87713e"
 
 [[projects]]
+  digest = "1:e22af8c7518e1eab6f2eab2b7d7558927f816262586cd6ed9f349c97a6c285c4"
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
+  pruneopts = "UT"
   revision = "0b12d6b5"
 
 [[projects]]
+  digest = "1:3cc9aba63890bcda985b86ee3b44802a7f42ed6c70ebc59a7bc983769df23c0f"
   name = "github.com/karrick/godirwalk"
   packages = ["."]
+  pruneopts = "UT"
   revision = "500f500f39a3c6f8ef40192026cac7c0ee71e7e3"
   version = "v1.7.0"
 
 [[projects]]
+  digest = "1:d4d17353dbd05cb52a2a52b7fe1771883b682806f68db442b436294926bbfafb"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
+  pruneopts = "UT"
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
 
 [[projects]]
+  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
+  pruneopts = "UT"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
 
 [[projects]]
+  digest = "1:9e9193aa51197513b3abcb108970d831fbcf40ef96aa845c4f03276e1fa316d2"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
+  pruneopts = "UT"
   revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
   version = "v1.0.5"
 
 [[projects]]
   branch = "master"
+  digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
+  pruneopts = "UT"
   revision = "4ec37c66abab2c7e02ae775328b2ff001c3f025a"
 
 [[projects]]
   branch = "master"
+  digest = "1:f188849a07aed244639654388dc775da034b17dab0890485e1e75c28e7a053ff"
   name = "golang.org/x/sys"
   packages = [
     "unix",
-    "windows"
+    "windows",
   ]
+  pruneopts = "UT"
   revision = "6f686a352de66814cdd080d970febae7767857a3"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "67775bc92a868cfd15c32e8fe40f6d7a9057b2bad0fc6ef6d21440a78f8acec2"
+  input-imports = [
+    "github.com/alexflint/go-arg",
+    "github.com/aws/aws-sdk-go/aws",
+    "github.com/aws/aws-sdk-go/aws/credentials",
+    "github.com/aws/aws-sdk-go/aws/session",
+    "github.com/aws/aws-sdk-go/service/s3",
+    "github.com/eapache/channels",
+    "github.com/gosuri/uilive",
+    "github.com/karrick/godirwalk",
+    "github.com/mattn/go-isatty",
+    "github.com/sirupsen/logrus",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -77,8 +77,8 @@ func (args) Description() string {
 //GetCliArgs return cli args structure and error
 func GetCliArgs() (cli argsParsed, err error) {
 	rawCli := args{}
-	rawCli.SourceRegion = "us-east-1"
-	rawCli.TargetRegion = "us-east-1"
+	rawCli.SourceRegion = "eu-west-1"
+	rawCli.TargetRegion = "eu-west-1"
 	rawCli.Workers = 16
 	rawCli.Retry = 1
 	rawCli.RetryInterval = 1
