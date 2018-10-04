@@ -50,7 +50,7 @@ func filterObject(obj *Object) bool {
 }
 
 func duplicateObject(srcObj *Object, destObj *Object) bool {
-	return srcObj.ETag == destObj.ETag
+	return len(srcObj.ETag) == 32 && srcObj.ETag == destObj.ETag
 }
 
 func processObj(ch <-chan Object, wg *sync.WaitGroup) {
