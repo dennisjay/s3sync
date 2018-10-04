@@ -53,6 +53,7 @@ type args struct {
 	TargetRegion   string `arg:"--tr" help:"Target AWS Region"`
 	TargetEndpoint string `arg:"--te" help:"Target AWS Endpoint"`
 	// Sync config
+	Watch           bool     `arg:"--watch" help:"Watch source dir (only FS)"`
 	Workers         uint     `arg:"-w" help:"Workers count"`
 	Retry           uint     `arg:"-r" help:"Max numbers of retries to sync file"`
 	RetryInterval   uint     `arg:"--rs" help:"Sleep interval (sec) between sync retries on error"`

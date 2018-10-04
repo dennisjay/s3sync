@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/eapache/channels"
+	"github.com/fsnotify/fsnotify"
 	"github.com/karrick/godirwalk"
 	"io"
 	"io/ioutil"
@@ -40,6 +41,7 @@ type SyncGroup struct {
 //Storage interface
 type Storage interface {
 	List(ch chan<- Object) error
+	Watch(ch chan<- Object) error
 	PutObject(object *Object) error
 	GetObjectContent(obj *Object) error
 	GetObjectMeta(obj *Object) error
@@ -181,6 +183,11 @@ func (storage AWSStorage) List(output chan<- Object) error {
 	}
 }
 
+//Watch S3 bucket and send found objects to chan
+func (storage AWSStorage) Watch(output chan<- Object) error {
+	return nil
+}
+
 //PutObject to bucket
 func (storage AWSStorage) PutObject(obj *Object) error {
 	_, err := storage.awsSvc.PutObject(&s3.PutObjectInput{
@@ -289,6 +296,54 @@ func (storage FSStorage) List(output chan<- Object) error {
 	case msg := <-listResultChan:
 		stopListing = true
 		wg.Wait()
+		close(output)
+		return msg
+	}
+}
+
+//Watch FS and send results to chan
+func (storage FSStorage) Watch(output chan<- Object) error {
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	done := make(chan error)
+	go func() {
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				}
+				log.Println("event:", event)
+				if event.Op&fsnotify.Create == fsnotify.Create {
+					log.Println("modified file:", event.Name)
+
+					atomic.AddUint64(&counter.totalObjCnt, 1)
+					output <- Object{Key: strings.TrimPrefix(event.Name, storage.dir)}
+				}
+			case err, ok := <-watcher.Errors:
+				if !ok {
+					return
+				}
+				if err != nil {
+					log.Fatal(err)
+				}
+				done <- err
+				return
+			}
+		}
+	}()
+
+	err = watcher.Add(storage.dir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	select {
+	case msg := <-done:
+		watcher.Close()
 		close(output)
 		return msg
 	}

@@ -32,7 +32,7 @@ func main() {
 	}
 
 	if cli.DisableHTTP2 {
-		os.Setenv("GODEBUG", os.Getenv("GODEBUG") + "http2client=0")
+		os.Setenv("GODEBUG", os.Getenv("GODEBUG")+"http2client=0")
 	}
 
 	configureLogging()
@@ -70,8 +70,16 @@ func main() {
 		go startProgressBar(prgBarQuit)
 	}
 
-	if err := syncGr.Source.List(objChan); err != nil {
-		log.Fatalf("Listing objects failed: %s\n", err)
+	if cli.Watch {
+		log.Info("Watching \n")
+
+		if err := syncGr.Source.Watch(objChan); err != nil {
+			log.Fatalf("Watching FS failed: %s\n", err)
+		}
+	} else {
+		if err := syncGr.Source.List(objChan); err != nil {
+			log.Fatalf("Listing objects failed: %s\n", err)
+		}
 	}
 
 	wg.Wait()
