@@ -20,9 +20,9 @@ patterns:
   - pattern: "media/**/*.png"
     config: { cachecontrol: "public,max-age=31536000", tagging: "traffic-type=media-asset"}
   - pattern: "media/**/*.JS"
-    config: { cachecontrol: "public,max-age=60", tagging: "traffic-type=media-config"}
+    config: { cachecontrol: "public,max-age=300", tagging: "traffic-type=media-config"}
   - pattern: "media/**/*.js"
-    config: { cachecontrol: "public,max-age=60", tagging: "traffic-type=media-config"}
+    config: { cachecontrol: "public,max-age=300", tagging: "traffic-type=media-config"}
   - pattern: "playouts/*"
     config: { cachecontrol: "public,max-age=300", tagging: "traffic-type=playouts"}
   - pattern: "playoutsJson/*"
