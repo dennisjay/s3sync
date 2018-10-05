@@ -1,0 +1,37 @@
+patterns:
+  - pattern: "booked/byBooking/**/*.js"
+    config: { cachecontrol: "public,max-age=300", tagging: "traffic-type=media-by-booking"}
+  - pattern: "booked/byAdslot/**/*.js"
+    config: { cachecontrol: "public,max-age=300", tagging: "traffic-type=media-by-adslot"}
+  - pattern: "brands/*"
+    config: { cachecontrol: "public,max-age=86400", tagging: "traffic-type=brands"}
+  - pattern: "domain/*"
+    config: { cachecontrol: "public,max-age=1800", tagging: "traffic-type=domain"}
+  - pattern: "media/**/*.JPEG"
+    config: { cachecontrol: "public,max-age=31536000", tagging: "traffic-type=media-asset"}
+  - pattern: "media/**/*.jpeg"
+    config: { cachecontrol: "public,max-age=31536000", tagging: "traffic-type=media-asset"}
+  - pattern: "media/**/*.JPG"
+    config: { cachecontrol: "public,max-age=31536000", tagging: "traffic-type=media-asset"}
+  - pattern: "media/**/*.jpg"
+    config: { cachecontrol: "public,max-age=31536000", tagging: "traffic-type=media-asset"}
+  - pattern: "media/**/*.PNG"
+    config: { cachecontrol: "public,max-age=31536000", tagging: "traffic-type=media-asset"}
+  - pattern: "media/**/*.png"
+    config: { cachecontrol: "public,max-age=31536000", tagging: "traffic-type=media-asset"}
+  - pattern: "media/**/*.JS"
+    config: { cachecontrol: "public,max-age=60", tagging: "traffic-type=media-config"}
+  - pattern: "media/**/*.js"
+    config: { cachecontrol: "public,max-age=60", tagging: "traffic-type=media-config"}
+  - pattern: "playouts/*"
+    config: { cachecontrol: "public,max-age=300", tagging: "traffic-type=playouts"}
+  - pattern: "playoutsJson/*"
+    config: { cachecontrol: "public,max-age=31536000", tagging: "traffic-type=playouts-json"}
+  - pattern: "sss/*"
+    config: { cachecontrol: "public,max-age=300", tagging: "traffic-type=sss"}
+  - pattern: "twiago/*"
+    config: { cachecontrol: "public,max-age=31536000", tagging: "traffic-type=twiago"}
+  - pattern: "videoTns/*"
+    config: { cachecontrol: "public,max-age=31536000", tagging: "traffic-type=video-thumbnails"}
+  - pattern: "pct/*"
+    config: { cachecontrol: "public,max-age=300", tagging: "traffic-type=pct-campaign-config"}

@@ -50,6 +50,7 @@ func main() {
 	case s3Conn:
 		syncGr.Source = NewAWSStorage(cli.SourceKey, cli.SourceSecret, cli.SourceRegion, cli.SourceEndpoint,
 			cli.Source.Bucket, cli.Source.Path, cli.Acl, s3keysPerReq, cli.Workers, cli.Retry, cli.RetryInterval,
+			cli.HeadersConfig,
 		)
 	case fsConn:
 		syncGr.Source = NewFSStorage(cli.Source.Path, permFile, permDir, cli.Workers)
@@ -58,6 +59,7 @@ func main() {
 	case s3Conn:
 		syncGr.Target = NewAWSStorage(cli.TargetKey, cli.TargetSecret, cli.TargetRegion, cli.TargetEndpoint,
 			cli.Target.Bucket, cli.Target.Path, cli.Acl, s3keysPerReq, cli.Workers, cli.Retry, cli.RetryInterval,
+			cli.HeadersConfig,
 		)
 	case fsConn:
 		syncGr.Target = NewFSStorage(cli.Target.Path, permFile, permDir, cli.Workers)

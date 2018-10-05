@@ -86,6 +86,23 @@
   version = "v1.36.0"
 
 [[projects]]
+  digest = "1:9ae31ce33b4bab257668963e844d98765b44160be4ee98cafc44637a213e530d"
+  name = "github.com/gobwas/glob"
+  packages = [
+    ".",
+    "compiler",
+    "match",
+    "syntax",
+    "syntax/ast",
+    "syntax/lexer",
+    "util/runes",
+    "util/strings",
+  ]
+  pruneopts = "UT"
+  revision = "5ccd90ef52e1e632236f7326478d4faa74f99438"
+  version = "v0.2.3"
+
+[[projects]]
   branch = "master"
   digest = "1:cde3502ff38bf880c3a783acc5b48754aa509c651c4902c68726d2769883e9de"
   name = "github.com/gosuri/uilive"
@@ -151,6 +168,14 @@
   pruneopts = "UT"
   revision = "6f686a352de66814cdd080d970febae7767857a3"
 
+[[projects]]
+  digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -162,10 +187,12 @@
     "github.com/aws/aws-sdk-go/service/s3",
     "github.com/eapache/channels",
     "github.com/fsnotify/fsnotify",
+    "github.com/gobwas/glob",
     "github.com/gosuri/uilive",
     "github.com/karrick/godirwalk",
     "github.com/mattn/go-isatty",
     "github.com/sirupsen/logrus",
+    "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

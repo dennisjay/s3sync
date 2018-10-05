@@ -63,6 +63,7 @@ type args struct {
 	Debug           bool     `arg:"-d" help:"Show debug logging"`
 	OnFail          string   `arg:"--on-fail,-f" help:"Action on failed. Possible values: fatal, log"`
 	DisableHTTP2    bool     `arg:"--disable-http2" help:"Disable HTTP2 for http client"`
+	HeadersConfig   string   `arg:"--hc" help:"Custom Headers Config. Configure Headers in a yaml file"`
 }
 
 //Version return program version string on human format

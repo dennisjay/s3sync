@@ -5,13 +5,16 @@ import (
 	"crypto/md5"
 	"encoding/binary"
 	"encoding/hex"
+	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/eapache/channels"
 	"github.com/fsnotify/fsnotify"
+	"github.com/gobwas/glob"
 	"github.com/karrick/godirwalk"
+	"gopkg.in/yaml.v2"
 	"io"
 	"io/ioutil"
 	"mime"
@@ -47,6 +50,16 @@ type Storage interface {
 	GetObjectMeta(obj *Object) error
 }
 
+type HeaderConfigPatterns struct {
+	Pattern         string
+	Config          s3.PutObjectInput
+	PatternCompiled glob.Glob
+}
+
+type HeaderConfig struct {
+	Patterns []HeaderConfigPatterns
+}
+
 //AWSStorage configuration
 type AWSStorage struct {
 	awsSvc        *s3.S3
@@ -58,6 +71,7 @@ type AWSStorage struct {
 	workers       uint
 	retry         uint
 	retryInterval time.Duration
+	headerConfig  HeaderConfig
 }
 
 //FSStorage configuration
@@ -68,8 +82,36 @@ type FSStorage struct {
 	workers  uint
 }
 
+func readYamlConfig(headersConfig string) HeaderConfig {
+
+	var result HeaderConfig
+
+	if len(headersConfig) <= 0 {
+		return result
+	}
+
+	content, err := ioutil.ReadFile(headersConfig)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+		return result
+	}
+
+	err = yaml.UnmarshalStrict([]byte(content), &result)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+		return result
+	}
+
+	for _, pat := range result.Patterns {
+		pat.PatternCompiled = glob.MustCompile(pat.Pattern)
+	}
+
+	fmt.Printf("--- t:\n%v\n\n", result)
+	return result
+}
+
 //NewAWSStorage return new configured S3 storage
-func NewAWSStorage(awsAccessKey, awsSecretKey, awsRegion, endpoint, bucketName, prefix, acl string, keysPerReq int64, workers, retry uint, retryInterval time.Duration) (storage AWSStorage) {
+func NewAWSStorage(awsAccessKey, awsSecretKey, awsRegion, endpoint, bucketName, prefix, acl string, keysPerReq int64, workers, retry uint, retryInterval time.Duration, headersConfig string) (storage AWSStorage) {
 	awsConfig := aws.NewConfig()
 	awsConfig.S3ForcePathStyle = aws.Bool(true)
 	awsConfig.CredentialsChainVerboseErrors = aws.Bool(true)
@@ -99,6 +141,9 @@ func NewAWSStorage(awsAccessKey, awsSecretKey, awsRegion, endpoint, bucketName, 
 	storage.workers = workers
 	storage.retry = retry
 	storage.retryInterval = retryInterval
+
+	storage.headerConfig = readYamlConfig(headersConfig)
+
 	return storage
 }
 
@@ -190,13 +235,32 @@ func (storage AWSStorage) Watch(output chan<- Object) error {
 
 //PutObject to bucket
 func (storage AWSStorage) PutObject(obj *Object) error {
-	_, err := storage.awsSvc.PutObject(&s3.PutObjectInput{
+	key := obj.Key
+	input := s3.PutObjectInput{
 		Bucket:      aws.String(storage.awsBucket),
-		Key:         aws.String(filepath.Join(storage.prefix, obj.Key)),
+		Key:         aws.String(filepath.Join(storage.prefix, key)),
 		Body:        bytes.NewReader(obj.Content),
 		ContentType: aws.String(obj.ContentType),
 		ACL:         aws.String(storage.acl),
-	})
+	}
+
+	for _, pat := range storage.headerConfig.Patterns {
+		pat.PatternCompiled = glob.MustCompile(pat.Pattern)
+		if pat.PatternCompiled.Match(key) {
+			log.Info("Matching key ", key)
+			if pat.Config.CacheControl != nil {
+				input.SetCacheControl(*pat.Config.CacheControl)
+			}
+			if pat.Config.ContentType != nil {
+				input.SetCacheControl(*pat.Config.ContentType)
+			}
+			if pat.Config.Tagging != nil {
+				input.SetCacheControl(*pat.Config.Tagging)
+			}
+		}
+	}
+
+	_, err := storage.awsSvc.PutObject(&input)
 	if err != nil {
 		return err
 	}
