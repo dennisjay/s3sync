@@ -5,7 +5,6 @@ import (
 	"crypto/md5"
 	"encoding/binary"
 	"encoding/hex"
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -106,7 +105,6 @@ func readYamlConfig(headersConfig string) HeaderConfig {
 		pat.PatternCompiled = glob.MustCompile(pat.Pattern)
 	}
 
-	fmt.Printf("--- t:\n%v\n\n", result)
 	return result
 }
 
@@ -247,15 +245,14 @@ func (storage AWSStorage) PutObject(obj *Object) error {
 	for _, pat := range storage.headerConfig.Patterns {
 		pat.PatternCompiled = glob.MustCompile(pat.Pattern)
 		if pat.PatternCompiled.Match(key) {
-			log.Info("Matching key ", key)
 			if pat.Config.CacheControl != nil {
 				input.SetCacheControl(*pat.Config.CacheControl)
 			}
 			if pat.Config.ContentType != nil {
-				input.SetCacheControl(*pat.Config.ContentType)
+				input.SetContentType(*pat.Config.ContentType)
 			}
 			if pat.Config.Tagging != nil {
-				input.SetCacheControl(*pat.Config.Tagging)
+				input.SetTagging(*pat.Config.Tagging)
 			}
 		}
 	}
